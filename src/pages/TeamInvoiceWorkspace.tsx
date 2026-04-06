@@ -131,6 +131,7 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
   const [payOpen, setPayOpen] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
   const [wizardStep, setWizardStep] = useState(() => (isSharedView ? 3 : 1));
+  const [actionBusy, setActionBusy] = useState<null | "copy" | "savePaid" | "saveUnpaid">(null);
 
   const seedDisc = (seed as { discountMode?: string }).discountMode;
 
@@ -420,8 +421,10 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
   };
 
   const copyShareLink = async () => {
+    setActionBusy("copy");
     if (!buyerName.trim() || !invoiceNo.trim()) {
       window.alert("Add customer name and invoice number first.");
+      setActionBusy(null);
       return;
     }
     const built = buildSharePayload();
@@ -429,19 +432,25 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
     try {
       await navigator.clipboard.writeText(url);
       setShareFeedback("Link copied. Customer opens read-only invoice (Print → Save as PDF in browser).");
+      window.alert("Copied share link.");
     } catch {
       setShareFeedback(url);
+      window.prompt("Copy link:", url);
     }
     window.setTimeout(() => setShareFeedback(null), 6000);
+    setActionBusy(null);
   };
 
   const pushDashboard = async (paid: boolean) => {
+    setActionBusy(paid ? "savePaid" : "saveUnpaid");
     if (!buyerName.trim() || !buyerPhone.trim()) {
       window.alert("Add customer name and mobile first.");
+      setActionBusy(null);
       return;
     }
     if (wizardStep < 3 && !isSharedView) {
       window.alert("Complete steps 1–2 first.");
+      setActionBusy(null);
       return;
     }
     const url = await saveShareAndGetUrlSynced(buildSharePayload());
@@ -478,6 +487,7 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
       });
     } catch (e) {
       window.alert(e instanceof Error ? e.message : "Could not save booking.");
+      setActionBusy(null);
       return;
     }
     const savedText = paid
@@ -490,6 +500,7 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
       return;
     }
     window.setTimeout(() => setShareFeedback(null), 6000);
+    setActionBusy(null);
   };
 
   const waCustomerHref = useMemo(() => {
@@ -892,9 +903,10 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
                 <button
                   type="button"
                   onClick={copyShareLink}
+                  disabled={actionBusy !== null}
                   className="w-full rounded-xl border-2 border-[#00A9FF] bg-white py-3 text-[14px] font-bold text-[#0077b6]"
                 >
-                  Copy share link
+                  {actionBusy === "copy" ? "Copying..." : "Copy share link"}
                 </button>
                 {shareFeedback ? (
                   <p className="rounded-lg bg-slate-50 p-2 text-[11px] text-slate-600">{shareFeedback}</p>
@@ -916,9 +928,10 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
                         setPaymentStatus("paid");
                         void pushDashboard(true);
                       }}
+                      disabled={actionBusy !== null}
                       className="w-full rounded-xl border border-emerald-700 bg-emerald-700 py-2.5 text-[13px] font-bold text-white"
                     >
-                      Save · Paid
+                      {actionBusy === "savePaid" ? "Saving..." : "Save · Paid"}
                     </button>
                     {waCustomerHref && waCustomerHref !== "#" ? (
                       <a
@@ -937,9 +950,10 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
                     <button
                       type="button"
                       onClick={() => void pushDashboard(false)}
+                      disabled={actionBusy !== null}
                       className="w-full rounded-xl border border-amber-600 bg-white py-2.5 text-[13px] font-bold text-amber-900"
                     >
-                      Save · Unpaid (follow-up)
+                      {actionBusy === "saveUnpaid" ? "Saving..." : "Save · Unpaid (follow-up)"}
                     </button>
                   </div>
                 ) : null}
