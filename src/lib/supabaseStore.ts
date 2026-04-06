@@ -132,8 +132,23 @@ export async function insertTeamBooking(input: {
     notes: input.notes ?? null,
   };
   const { data, error } = await sb.from("bookings").insert(row).select("*").single();
-  if (error) throw new Error(error.message);
-  return mapBooking(data as DbBooking);
+  if (!error) return mapBooking(data as DbBooking);
+
+  // In some migrated datasets, team_member_id may point to a stale/non-auth UUID.
+  // Fallback to null id while preserving team_member_name so save never blocks.
+  const isTeamFkError =
+    error.message.includes("bookings_team_member_id_fkey") ||
+    error.message.includes("foreign key constraint");
+  if (!isTeamFkError) throw new Error(error.message);
+
+  const retryRow = { ...row, team_member_id: null };
+  const { data: retryData, error: retryError } = await sb
+    .from("bookings")
+    .insert(retryRow)
+    .select("*")
+    .single();
+  if (retryError) throw new Error(retryError.message);
+  return mapBooking(retryData as DbBooking);
 }
 
 export async function markBookingPaid(bookingId: string): Promise<boolean> {
