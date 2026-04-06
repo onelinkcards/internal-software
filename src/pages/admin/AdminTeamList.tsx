@@ -43,12 +43,6 @@ export function AdminTeamList() {
       return;
     }
 
-    const base = (import.meta.env.VITE_INVOICE_SHARE_PUBLIC_BASE as string | undefined)?.trim();
-    if (!base) {
-      setCreateError("Missing VITE_INVOICE_SHARE_PUBLIC_BASE in billing app env.");
-      return;
-    }
-
     const sb = getSupabaseBrowserClient();
     if (!sb) {
       setCreateError("Supabase client is not configured.");
@@ -64,7 +58,7 @@ export function AdminTeamList() {
 
     setCreateBusy(true);
     try {
-      const res = await fetch(`${base}/api/internal/team-members`, {
+      const res = await fetch("/api/team-members", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
