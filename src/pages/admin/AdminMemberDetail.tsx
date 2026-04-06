@@ -17,7 +17,16 @@ export function AdminMemberDetail() {
       const [allMembers, bookings] = await Promise.all([fetchTeamProfiles(), fetchBookings()]);
       const m = allMembers.find((x) => x.id === memberId) ?? null;
       setMember(m);
-      setRows(bookings.filter((b) => b.teamMemberId === memberId));
+      const normalizedMemberName = (m?.name || "").trim().toLowerCase();
+      setRows(
+        bookings.filter((b) => {
+          if (b.teamMemberId === memberId) return true;
+          if (!b.teamMemberId && b.teamMemberName && normalizedMemberName) {
+            return b.teamMemberName.trim().toLowerCase() === normalizedMemberName;
+          }
+          return false;
+        }),
+      );
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : "Load failed.");
       setMember(null);
