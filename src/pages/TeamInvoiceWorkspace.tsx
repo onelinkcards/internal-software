@@ -491,15 +491,11 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
       return;
     }
     const savedText = paid
-      ? "Saved as PAID on dashboard."
-      : "Saved as UNPAID — follow up from team home.";
+      ? "Saved done: PAID."
+      : "Saved done: UNPAID.";
     setShareFeedback(savedText);
-    const shouldBack = window.confirm(`${savedText}\n\nGo back to panel now?`);
-    if (shouldBack) {
-      navigate(session.role === "super" ? "/admin" : "/team");
-      return;
-    }
-    window.setTimeout(() => setShareFeedback(null), 6000);
+    window.alert(`${savedText}\nReturning to home panel...`);
+    navigate(session.role === "super" ? "/admin" : "/team");
     setActionBusy(null);
   };
 
