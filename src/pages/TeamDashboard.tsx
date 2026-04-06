@@ -27,7 +27,13 @@ export function TeamDashboard() {
 
   const mine =
     session.role === "team"
-      ? bookings.filter((b) => b.teamMemberId === session.memberId)
+      ? bookings.filter((b) => {
+          if (b.teamMemberId === session.memberId) return true;
+          if (!b.teamMemberId && b.teamMemberName) {
+            return b.teamMemberName.trim().toLowerCase() === session.memberName.trim().toLowerCase();
+          }
+          return false;
+        })
       : bookings;
 
   const stats = useMemo(() => revenueStats(mine), [mine]);
