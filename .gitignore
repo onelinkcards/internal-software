@@ -1,0 +1,11 @@
+# Separate project — no secrets in repo
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+build/
+.output/
+*.local.pdf
+.DS_Store
+.vercel

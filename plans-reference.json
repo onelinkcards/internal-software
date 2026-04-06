@@ -1,0 +1,39 @@
+{
+  "currency": "INR",
+  "gstRatePercent": 18,
+  "priceBasis": "GST-inclusive list prices — synced with Onelink.cards-main-website pricingPlans.",
+  "plans": [
+    {
+      "id": "essential",
+      "name": "Essential",
+      "orderAmount": 3999,
+      "maintenanceOptions": [
+        { "id": "yearly", "label": "Yearly", "price": 1000 },
+        { "id": "2-year", "label": "2-Year", "price": 1800 }
+      ]
+    },
+    {
+      "id": "business",
+      "name": "Business",
+      "orderAmount": 9999,
+      "maintenanceOptions": [
+        { "id": "yearly", "label": "Yearly", "price": 2000 },
+        { "id": "2-year", "label": "2-Year", "price": 3500 }
+      ]
+    },
+    {
+      "id": "signature",
+      "name": "Signature",
+      "orderAmount": 13999,
+      "maintenanceOptions": [
+        { "id": "yearly", "label": "Yearly", "price": 2499 },
+        { "id": "2-year", "label": "2-Year", "price": 4499 }
+      ]
+    }
+  ],
+  "aliases": {
+    "launch-plan": "business"
+  },
+  "bulkDiscountTiers": [],
+  "addOns": []
+}

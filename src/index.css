@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  .print\:border-0 {
+    border: none !important;
+  }
+
+  .invoice-a4 {
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    width: 210mm !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 297mm !important;
+    padding: 14mm 16mm !important;
+    page-break-inside: avoid;
+  }
+
+  #kry-invoice-a4 {
+    break-inside: avoid;
+  }
+}

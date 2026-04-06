@@ -1,0 +1,27 @@
+{
+  "legalName": "KRIYON GROUP PRIVATE LIMITED",
+  "tradeBrand": "OneLink",
+  "constitution": "Private Limited Company",
+  "cin": "U74909JK2025PTC017984",
+  "gstin": "01AAMCK2092B1Z0",
+  "state": "Jammu & Kashmir",
+  "stateCode": "01",
+  "addressLines": [
+    "ROOM NO. 2, FIRST FLOOR, TAWI ENCLAVE, VILL NANDINI,",
+    "GOL GUJRAL, JAMMU, JAMMU & KASHMIR, 180002"
+  ],
+  "contact": {
+    "email": "support@repixelx.tech",
+    "phoneDisplay": "+91 9622121100"
+  },
+  "invoiceTemplate": {
+    "logoPath": "/kriyon-logo.png",
+    "defaultPaymentMode": "UPI",
+    "defaultUpiText": "Pay via UPI: kriyongroup@ptyes",
+    "termsParagraph": "Payment is due on or before the due date shown on this invoice unless another date is agreed in writing. Please use the invoice number as the payment reference.",
+    "thankYouLine": "THANK YOU FOR YOUR BUSINESS",
+    "footerContractLine": "Detailed commercial terms (including disputes) are governed by your agreement with KRIYON GROUP PRIVATE LIMITED — not by this invoice.",
+    "upiId": "kriyongroup@ptyes",
+    "upiPayeeName": "KRIYON GROUP PRIVATE LIMITED"
+  }
+}
