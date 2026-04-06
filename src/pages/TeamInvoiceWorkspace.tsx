@@ -127,7 +127,7 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
     }
   }, [location.state, navigate]);
 
-  const { session } = useSession();
+  const { session, user } = useSession();
   const [payOpen, setPayOpen] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
   const [wizardStep, setWizardStep] = useState(() => (isSharedView ? 3 : 1));
@@ -451,10 +451,14 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
         : session.role === "super"
           ? "Super admin"
           : null;
+    const teamMemberId =
+      session.role === "team"
+        ? user?.id ?? session.memberId
+        : null;
     try {
       await addBooking({
         source: "team",
-        teamMemberId: session.role === "team" ? session.memberId : null,
+        teamMemberId,
         teamMemberName: memberLabel,
         customerName: buyerName,
         customerEmail: buyerEmail,
@@ -476,9 +480,15 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
       window.alert(e instanceof Error ? e.message : "Could not save booking.");
       return;
     }
-    setShareFeedback(
-      paid ? "Saved as PAID on dashboard." : "Saved as UNPAID — follow up from team home.",
-    );
+    const savedText = paid
+      ? "Saved as PAID on dashboard."
+      : "Saved as UNPAID — follow up from team home.";
+    setShareFeedback(savedText);
+    const shouldBack = window.confirm(`${savedText}\n\nGo back to panel now?`);
+    if (shouldBack) {
+      navigate(session.role === "super" ? "/admin" : "/team");
+      return;
+    }
     window.setTimeout(() => setShareFeedback(null), 6000);
   };
 
