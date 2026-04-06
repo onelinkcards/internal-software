@@ -115,12 +115,15 @@ export async function insertTeamBooking(input: {
   notes?: string;
 }): Promise<BookingRecord> {
   const sb = requireClient();
+  const { data: authData } = await sb.auth.getUser();
+  const authUid = authData.user?.id ?? null;
   const at = new Date().toISOString();
+  const effectiveTeamMemberId = input.source === "team" ? (authUid ?? input.teamMemberId) : input.teamMemberId;
   const row = {
     created_at: at,
     paid_at: input.paymentStatus === "paid" ? at : null,
     source: "team" as const,
-    team_member_id: input.teamMemberId,
+    team_member_id: effectiveTeamMemberId,
     team_member_name: input.teamMemberName,
     customer_name: input.customerName,
     customer_email: input.customerEmail,
@@ -141,7 +144,7 @@ export async function insertTeamBooking(input: {
     error.message.includes("foreign key constraint");
   if (!isTeamFkError) throw new Error(error.message);
 
-  const retryRow = { ...row, team_member_id: null };
+  const retryRow = { ...row, team_member_id: authUid ?? null };
   const { data: retryData, error: retryError } = await sb
     .from("bookings")
     .insert(retryRow)
