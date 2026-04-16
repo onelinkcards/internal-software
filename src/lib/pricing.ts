@@ -21,10 +21,18 @@ export function getMaintenance(
   return m;
 }
 
-/** Per-seat GST-inclusive unit = plan order + selected maintenance. */
+/** Setup fee derived from the first-year total minus yearly hosting. */
+export function setupFeeInclusive(plan: PlanRow): number {
+  const yearly =
+    plan.maintenanceOptions.find((o) => o.id === "yearly") ??
+    plan.maintenanceOptions[0];
+  return round2(Math.max(0, plan.orderAmount - (yearly?.price ?? 0)));
+}
+
+/** Per-seat GST-inclusive unit = setup fee + selected hosting. */
 export function unitInclusiveCatalog(plan: PlanRow, maintenanceId: string | undefined): number {
   const m = getMaintenance(plan, maintenanceId);
-  return plan.orderAmount + m.price;
+  return round2(setupFeeInclusive(plan) + m.price);
 }
 
 export function catalogueGrossSubtotal(

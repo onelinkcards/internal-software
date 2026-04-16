@@ -3,6 +3,7 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 export const SHARE_VERSION = 2 as const;
 
 export type BillingBrandId = "onelink" | "repixelx";
+export type BillingStage = "full" | "advance" | "final";
 
 export type SharePayload = {
   v: typeof SHARE_VERSION;
@@ -32,6 +33,8 @@ export type SharePayload = {
   paymentRef: string;
   billingBrand: BillingBrandId;
   productLabel: string;
+  billingStage: BillingStage;
+  billingPercent: 50 | 100;
   dueDate: string;
   paymentStatus: "paid" | "unpaid";
 };
@@ -96,6 +99,11 @@ export function coerceSharePayload(o: Record<string, unknown>): SharePayload | n
     paymentRef: typeof o.paymentRef === "string" ? o.paymentRef : "",
     billingBrand: o.billingBrand === "repixelx" ? "repixelx" : "onelink",
     productLabel: typeof o.productLabel === "string" && o.productLabel.trim() ? o.productLabel : "OneLink",
+    billingStage:
+      o.billingStage === "advance" || o.billingStage === "final" || o.billingStage === "full"
+        ? o.billingStage
+        : "full",
+    billingPercent: o.billingPercent === 50 ? 50 : 100,
     dueDate: typeof o.dueDate === "string" ? o.dueDate : "",
     paymentStatus: o.paymentStatus === "paid" ? "paid" : "unpaid",
   };

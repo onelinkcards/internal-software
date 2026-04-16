@@ -9,7 +9,7 @@
 @media print {
   @page {
     size: A4;
-    margin: 0;
+    margin: 12mm;
   }
 
   html,
@@ -43,9 +43,9 @@
     margin: 0 auto !important;
     width: 210mm !important;
     max-width: none !important;
-    min-width: 0 !important;
+    min-width: 210mm !important;
     min-height: 297mm !important;
-    padding: 14mm 16mm !important;
+    padding: 12mm !important;
     page-break-inside: avoid;
   }
 

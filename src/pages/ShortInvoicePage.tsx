@@ -40,8 +40,8 @@ export function ShortInvoicePage() {
       <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-10 text-center sm:px-6">
         <p className="text-lg font-bold text-slate-800">Invoice not available</p>
         <p className="mt-2 max-w-md text-sm text-slate-600">
-          This link may be wrong, expired, or the invoice has not been published yet. Ask the team to resend the link
-          from billing after saving.
+          This link may be wrong, expired, or the invoice has not been published yet. Ask the billing team to resend a
+          fresh invoice link.
         </p>
       </div>
     );

@@ -15,7 +15,7 @@
     "phoneDisplay": "+91 9622121100"
   },
   "invoiceTemplate": {
-    "logoPath": "/kriyon-logo.png",
+    "logoPath": "/stamp-1776347234053.png",
     "defaultPaymentMode": "UPI",
     "defaultUpiText": "Pay via UPI: kriyongroup@ptyes",
     "termsParagraph": "Payment is due on or before the due date shown on this invoice unless another date is agreed in writing. Please use the invoice number as the payment reference.",
