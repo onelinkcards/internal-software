@@ -24,6 +24,8 @@ type Props = {
   projectTypeLabel?: string;
   paymentStatusLabel?: string;
   dueLabel?: string;
+  advanceAmount?: number;
+  finalAmount?: number;
   buyerName: string;
   buyerBusiness: string;
   buyerGstin: string;
@@ -70,6 +72,8 @@ export function InvoicePreview({
   projectTypeLabel,
   paymentStatusLabel,
   dueLabel,
+  advanceAmount,
+  finalAmount,
   buyerName,
   buyerBusiness,
   buyerGstin,
@@ -102,6 +106,10 @@ export function InvoicePreview({
     "Please use the invoice number as payment reference",
     "All services are subject to our standard Terms & Conditions: https://www.kriyongroup.com/legal",
   ];
+  const computedAdvance = Math.round((grandTotal / 2) * 100) / 100;
+  const computedFinal = Math.round((grandTotal - computedAdvance) * 100) / 100;
+  const advanceToPay = typeof advanceAmount === "number" ? advanceAmount : computedAdvance;
+  const finalToPay = typeof finalAmount === "number" ? finalAmount : computedFinal;
 
   return (
     <div className="w-full min-w-0 print:bg-white">
@@ -223,6 +231,20 @@ export function InvoicePreview({
                   <span className="font-semibold text-slate-950">Balance:</span>{" "}
                   {dueLabel || "50% balance before final delivery"}
                 </p>
+                <div className="mt-2 space-y-2">
+                  <div className="rounded-lg border border-sky-200 bg-gradient-to-r from-sky-50 to-cyan-50 px-3 py-2 shadow-[0_2px_8px_rgba(14,116,144,0.12)]">
+                    <p className="text-[8px] font-semibold uppercase tracking-[0.08em] text-sky-800">
+                      Pay Advance (50%)
+                    </p>
+                    <p className="mt-0.5 text-[13px] font-bold tabular-nums text-sky-950">{formatInr(advanceToPay)}</p>
+                  </div>
+                  <div className="rounded-lg border border-violet-200 bg-gradient-to-r from-violet-50 to-indigo-50 px-3 py-2 shadow-[0_2px_8px_rgba(79,70,229,0.12)]">
+                    <p className="text-[8px] font-semibold uppercase tracking-[0.08em] text-violet-800">
+                      Pay Before Final Delivery (50%)
+                    </p>
+                    <p className="mt-0.5 text-[13px] font-bold tabular-nums text-violet-950">{formatInr(finalToPay)}</p>
+                  </div>
+                </div>
               </div>
             ) : null}
           </div>

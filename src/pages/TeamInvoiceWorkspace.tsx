@@ -63,6 +63,17 @@ function nextKryInvoiceNo(): string {
   return `OL/${yyyy}/${mm}/${String(next).padStart(4, "0")}`;
 }
 
+function withInvoiceEnding(currentInvoiceNo: string, endingDigits: string): string {
+  const cleanEnding = endingDigits.replace(/\D/g, "").slice(-4);
+  const nextEnding = (cleanEnding || "0001").padStart(4, "0");
+  const matchedPrefix = currentInvoiceNo.match(/^(OL\/\d{4}\/\d{2}\/)\d+$/);
+  if (matchedPrefix) return `${matchedPrefix[1]}${nextEnding}`;
+  const d = new Date();
+  const yyyy = String(d.getFullYear());
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `OL/${yyyy}/${mm}/${nextEnding}`;
+}
+
 function defaultCustomLines(): CustomLine[] {
   return [
     { id: crypto.randomUUID(), description: "", hsn: "9983", amountInclusive: 0 },
@@ -244,6 +255,13 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
   }, [grossInclusive, quantity, customMode, discountMode, discountPercent]);
 
   const billedTotal = useMemo(() => round2(pipeline.finalInclusive), [pipeline.finalInclusive]);
+  const advancePayAmount = useMemo(() => round2(billedTotal / 2), [billedTotal]);
+  const finalPayAmount = useMemo(() => round2(billedTotal - advancePayAmount), [billedTotal, advancePayAmount]);
+  const invoiceEndingDigits = useMemo(() => {
+    const matched = invoiceNo.match(/(\d+)$/);
+    if (!matched) return "0001";
+    return matched[1].slice(-4).padStart(4, "0");
+  }, [invoiceNo]);
 
   const tax = useMemo(
     () =>
@@ -397,6 +415,8 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
     projectTypeLabel: `${productLabel} ${selectedPlan.name}`.trim(),
     paymentStatusLabel: "50% advance before starting",
     dueLabel: "50% balance before final delivery",
+    advanceAmount: advancePayAmount,
+    finalAmount: finalPayAmount,
     buyerName,
     buyerBusiness,
     buyerGstin,
@@ -798,6 +818,12 @@ export function TeamInvoiceWorkspace({ forcedSharePayload = null }: WorkspacePro
                     value={invoiceNo}
                     onChange={(e) => setInvoiceNo(e.target.value)}
                     placeholder="Invoice no."
+                  />
+                  <input
+                    className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-[13px]"
+                    value={invoiceEndingDigits}
+                    onChange={(e) => setInvoiceNo((prev) => withInvoiceEnding(prev, e.target.value))}
+                    placeholder="Invoice ending (last 4 digits)"
                   />
                   <input
                     type="date"
